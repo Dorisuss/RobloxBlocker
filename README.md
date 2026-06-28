@@ -5,7 +5,7 @@
   - Перехватывает HTTPS-соединения по имени домена, блокировка работает мгновенно без перезапуска браузера
   - Запрещает браузерам (Chrome, Edge, Firefox, Floorp, Brave) обходить hosts файл через зашифрованный DNS
 
-  Запуск через run.bat, сидит в трее, UAC-запрос появляется автоматически. Кнопка Update IPs обновляет списки IP с RIPE NCC.
+    Запуск через run.bat, сидит в трее, UAC-запрос появляется автоматически. После нажатия Block нужно подождать ~10 секунд — в это время применяются правила файрвола и резолвятся актуальные IP Roblox. Кнопка Update IPs обновляет списки IP с RIPE NCC.
 
   ----
   EN
@@ -15,4 +15,4 @@
   - Intercepts HTTPS connections by domain name, blocking takes effect instantly without browser restart
   - Prevents browsers (Chrome, Edge, Firefox, Floorp, Brave) from bypassing the hosts file via encrypted DNS
 
-  Launch via run.bat, runs in system tray, UAC prompt appears automatically. Update IPs button fetches fresh IP lists from RIPE NCC.
+  Launch via run.bat, runs in system tray, UAC prompt appears automatically. After pressing Block, wait ~10 seconds — the app applies firewall rules and resolves live Roblox  IPs during this time. Update IPs button fetches fresh IP lists from RIPE NCC.
