@@ -22,8 +22,7 @@ RULE_PREFIX = "RobloxBlocker"
 HOSTS_MARKER_START = "# RobloxBlocker START"
 HOSTS_MARKER_END = "# RobloxBlocker END"
 HOSTS_PATH = Path(r"C:\Windows\System32\drivers\etc\hosts")
-REG_RUN_PATH = r"Software\Microsoft\Windows\CurrentVersion\Run"
-REG_VALUE_NAME = "RobloxBlocker"
+_TASK_NAME = "RobloxBlocker"
 CREATE_NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)
 
 DEFAULT_DOMAINS = [
@@ -419,23 +418,25 @@ def startup_command() -> str:
 
 
 def set_startup_enabled(enabled: bool) -> None:
-    with winreg.OpenKey(winreg.HKEY_CURRENT_USER, REG_RUN_PATH, 0, winreg.KEY_SET_VALUE) as key:
-        if enabled:
-            winreg.SetValueEx(key, REG_VALUE_NAME, 0, winreg.REG_SZ, startup_command())
-        else:
-            try:
-                winreg.DeleteValue(key, REG_VALUE_NAME)
-            except FileNotFoundError:
-                pass
+    if enabled:
+        subprocess.run(
+            ["schtasks", "/Create", "/TN", _TASK_NAME, "/TR", startup_command(),
+             "/SC", "ONLOGON", "/RL", "HIGHEST", "/F"],
+            capture_output=True, creationflags=CREATE_NO_WINDOW, check=False,
+        )
+    else:
+        subprocess.run(
+            ["schtasks", "/Delete", "/TN", _TASK_NAME, "/F"],
+            capture_output=True, creationflags=CREATE_NO_WINDOW, check=False,
+        )
 
 
 def startup_enabled() -> bool:
-    try:
-        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, REG_RUN_PATH, 0, winreg.KEY_READ) as key:
-            winreg.QueryValueEx(key, REG_VALUE_NAME)
-            return True
-    except FileNotFoundError:
-        return False
+    r = subprocess.run(
+        ["schtasks", "/Query", "/TN", _TASK_NAME],
+        capture_output=True, creationflags=CREATE_NO_WINDOW, check=False,
+    )
+    return r.returncode == 0
 
 
 def find_roblox_executables() -> list[Path]:
